@@ -1,9 +1,27 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 function CountryDetails() {
     const {countryId} = useParams();
     const {country, setCountry} = useState();
+    const {loading, setLoading} = useState();
+
+    useEffect(() => {
+        axios
+        .get(`https://ih-countries-api.herokuapp.com/countries/${countryId}`)
+        .then((response) => {
+            setCountry(response.data);
+            setLoading(false);
+        }) .catch((error) => {
+            console.error("Error fetching data: ", error);
+            setLoading(false);
+        })
+
+    }, [countryId])
+
+    {loading && 'Loading...'}
+    {country && 'Country not found'}
     
     return(
         <div className="container">
