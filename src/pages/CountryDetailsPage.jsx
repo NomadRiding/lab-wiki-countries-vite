@@ -1,28 +1,34 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import "../components/countries.css";
 
 function CountryDetails() {
+    const [country, setCountry] = useState(null);
     const {countryId} = useParams();
-    const {country, setCountry} = useState();
-    const {loading, setLoading} = useState();
-
+    const [loading, setLoading] = useState(true); 
+    
     useEffect(() => {
         axios
-        .get(`https://ih-countries-api.herokuapp.com/countries/${countryId}`)
-        .then((response) => {
-            setCountry(response.data);
-            setLoading(false);
-        }) .catch((error) => {
-            console.error("Error fetching data: ", error);
-            setLoading(false);
+      .get(`https://ih-countries-api.herokuapp.com/countries/${countryId}`)
+      .then((response) => {
+        setCountry(response.data);
+        setLoading(false);
         })
-
-    }, [countryId])
-
-    {loading && 'Loading...'}
-    {country && 'Country not found'}
+        .catch((error) => {
+        console.error("Error fetching the country data:", error);
+        setLoading(false);
+        });
+    }, [countryId]);
     
+    if (loading) {
+        return <h1>Loading...</h1>;
+    }
+      if (!country) {
+        return <h1>Country not found</h1>; // Display message if country data is not available
+      }
+      console.log("Country state:", country);
     return(
         <div className="container">
             <h1 className="page-title">Country Details</h1>
